@@ -3,8 +3,9 @@ import openGraphMatching.matcher as matcher
 from openGraphMatching.utils import convert_graph, check_match_correctness
 
 # CommentForm(session, post_id, id, body) :-
-#     CommentId(@session: Session, @post_id: Id, @id: Id),
-#     CommentBody(@session: Session, @post_id: Id, body: String).
+#     CommentId(session: Session, post_id: Id, id: Id),
+#     CommentTitle(session: Session, post_id: Id, id: Id, @title: String),
+#     CommentBody(session: Session, post_id: Id, id: Id, @body: String).
 
 hashes = []
 
@@ -24,19 +25,23 @@ def rev_h(h):
 q = nx.Graph()
 q.add_nodes_from([
     (0, {'feat': 'CommentId'}),
-    (1, {'feat': 'CommentBody'}),
-    (2, {'feat': 'CommentBody:Body'}),
+    (1, {'feat': 'CommentTitle'}),
+    (2, {'feat': 'CommentBody'}),
 ])
 
 q.add_edges_from([
     (0, 1),
-    (1, 2),
+    (0, 2),
 ])
 
 graph_nodes = [
     (h('CommentId:session0:post0:id0'), {'feat': 'CommentId'}),
-    (h('CommentBody:session0:post0'), {'feat': 'CommentBody'}),
-    (h('CommentBody:session0:post0:bodyval0'), {'feat': 'CommentBody:Body'}),
+    (h('CommentTitle:session0:post0:id0:titleval0'), {'feat': 'CommentTitle'}),
+    (h('CommentBody:session0:post0:id0:bodyval0'), {'feat': 'CommentBody'}),
+    
+    (h('CommentId:session0:post0:id1'), {'feat': 'CommentId'}),
+    (h('CommentTitle:session0:post0:id1:titleval1'), {'feat': 'CommentTitle'}),
+    (h('CommentBody:session0:post0:id1:bodyval1'), {'feat': 'CommentBody'}),
 ]
 
 graph_nodes.sort()
@@ -45,8 +50,11 @@ graph_nodes.sort()
 G = nx.Graph()
 G.add_nodes_from(graph_nodes)
 G.add_edges_from([
-    (h('CommentId:session0:post0:id0'), h('CommentBody:session0:post0')),
-    (h('CommentBody:session0:post0'), h('CommentBody:session0:post0:bodyval0')),
+    (h('CommentId:session0:post0:id0'), h('CommentTitle:session0:post0:id0:titleval0')),
+    (h('CommentId:session0:post0:id0'), h('CommentBody:session0:post0:id0:bodyval0')),
+    
+    (h('CommentId:session0:post0:id1'), h('CommentTitle:session0:post0:id1:titleval1')),
+    (h('CommentId:session0:post0:id1'), h('CommentBody:session0:post0:id1:bodyval1')),
 ])
 
 print(q.nodes)
