@@ -2,9 +2,9 @@ import networkx as nx
 import openGraphMatching.matcher as matcher
 from openGraphMatching.utils import convert_graph, check_match_correctness
 
-# User(session, first_name, last_name) :- UserFirstName(@session, first_name), UserLastName(@session, last_name).
-
-
+# User(session, first_name, last_name) :-
+# 	UserFirstName(@session, first_name),
+# 	UserLastName(@session, last_name).
 
 # The classic example
 # Construct the query graph
