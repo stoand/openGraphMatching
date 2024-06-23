@@ -34,8 +34,8 @@ q.add_nodes_from([
     (2, {'feat': 'CommentTitle'}),
     (3, {'feat': 'CommentBody'}),
     
-    # (4, {'feat': 'PostId'}),
-    # (5, {'feat': 'PostBody'}),
+    (4, {'feat': 'PostId'}),
+    (5, {'feat': 'PostBody'}),
 ])
 
 q.add_edges_from([
@@ -43,9 +43,9 @@ q.add_edges_from([
     (0, 2),
     (0, 3),
 
-    # (4, 5),
+    (4, 5),
 
-    # (4, 1),
+    (4, 1),
 ])
 
 graph_nodes = [
@@ -59,8 +59,8 @@ graph_nodes = [
     (h('CommentTitle:session0:post0:id1:titleval1'), {'feat': 'CommentTitle'}),
     (h('CommentBody:session0:post0:id1:bodyval1'), {'feat': 'CommentBody'}),
     
-    # (h('PostId:session0:post0'), {'feat': 'PostId'}),
-    # (h('PostBody:session0:post0:bodyval33'), {'feat': 'PostBody'}),
+    (h('PostId:session0:post0'), {'feat': 'PostId'}),
+    (h('PostBody:session0:post0:bodyval33'), {'feat': 'PostBody'}),
 ]
 
 graph_nodes.sort()
@@ -77,7 +77,11 @@ G.add_edges_from([
     (h('CommentId:session0:post0:id1'), h('CommentTitle:session0:post0:id1:titleval1')),
     (h('CommentId:session0:post0:id1'), h('CommentBody:session0:post0:id1:bodyval1')),
     
-    # (h('PostId:session0:post0'), h('PostBody:session0:post0:bodyval33')),
+    (h('PostId:session0:post0'), h('PostBody:session0:post0:bodyval33')),
+    
+    (h('PostId:session0:post0'), h('CommentPostId:session0:post0:id1')),
+    (h('PostId:session0:post0'), h('CommentPostId:session0:post0:id0')),
+    
 ])
 
 print(q.nodes)
