@@ -10,81 +10,81 @@ from openGraphMatching.utils import convert_graph, check_match_correctness
 # Construct the query graph
 q = nx.Graph()
 q.add_nodes_from([
-    (0, {'feat': 'A'}),
-    (1, {'feat': 'B'}),
-    (2, {'feat': 'C'}),
-    (3, {'feat': 'D'}),
-    (4, {'feat': 'E'}),
-    # (4, {'feat': 'User:session'}),
+    (10, {'feat': 'User:session'}),
     
-    # (1, {'feat': 'User:first_name'}),
-    # (2, {'feat': 'User:last_name'}),
+    (13, {'feat': 'UserFirstName:session'}),
+    (14, {'feat': 'UserFirstName:first_name'}),
     
-    # (3, {'feat': 'UserFirstName:session'}),
-    # (4, {'feat': 'UserFirstName:first_name'}),
-    
-    # (5, {'feat': 'UserLastName:session'}),
-    # (6, {'feat': 'UserLastName:last_name'}),
+    (15, {'feat': 'UserLastName:session'}),
+    (16, {'feat': 'UserLastName:last_name'}),
 ])
+
 q.add_edges_from([
-    (0, 1),
-    (0, 2),
-    (1, 2),
-    (1, 3),
-    (2, 3),
-    (3, 4),
+    (13, 14),
+
+    (15, 16),
+
+    (10, 13),
+    (10, 15),
 ])
+
+hashes = []
+
+def h(val):
+   hashed_val = abs(hash(val))
+   hashes.append({"h": hashed_val, "v": val})
+   return hashed_val
+
+def rev_h(h):
+    for i in hashes:
+        if i["h"] == h:
+            return i["v"]
+    return "<missing_hash>"
+
+graph_nodes = [
+    (0, {'feat': 'User:session', 'value': 'none'}),
+    
+    (h("session1"), {'feat': 'UserFirstName:session', 'value': 'session1'}),
+    (h("Andy"), {'feat': 'UserFirstName:first_name', 'value': 'Andy'}),
+    
+    (5, {'feat': 'UserLastName:session', 'value': 'session0'}),
+    (6, {'feat': 'UserLastName:last_name', 'value': 'Zero'}),
+
+    (7, {'feat': 'UserFirstName:session', 'value': 'session0'}),
+    (8, {'feat': 'UserFirstName:first_name', 'value': 'Bob'}),
+]
+
+graph_nodes.sort()
 
 # Construct the target graph
 G = nx.Graph()
-G.add_nodes_from([
-    (0, {'feat': 'A'}),
-    (1, {'feat': 'C'}),
-    (2, {'feat': 'B'}),
-    (3, {'feat': 'C'}),
-    (4, {'feat': 'B'}),
-    (5, {'feat': 'C'}),
-    (6, {'feat': 'B'}),
-    (7, {'feat': 'C'}),
-    (8, {'feat': 'D'}),
-    (9, {'feat': 'D'}),
-    (10, {'feat': 'D'}),
-    (11, {'feat': 'D'}),
-    (12, {'feat': 'D'}),
-    (13, {'feat': 'C'}),
-    (14, {'feat': 'D'}),
-    (15, {'feat': 'E'}),
-])
+G.add_nodes_from(graph_nodes)
 G.add_edges_from([
-    (0, 1),
-    (0, 2),
-    (0, 3),
-    (0, 4),
+    (h("session1"), h("Andy")),
+
+    (5, 6),
+
+    (7, 8),
+
+    (0, h("session1")),
     (0, 5),
-    (0, 6),
     (0, 7),
-    (1, 2),
-    (1, 8),
-    (2, 9),
-    (2, 10),
-    (3, 4),
-    (3, 10),
-    (4, 5),
-    (4, 10),
-    (4, 11),
-    (4, 12),
-    (5, 12),
-    (6, 12),
-    (6, 13),
-    (7, 14),
-    (9, 10),
-    (14, 15),
 ])
 
 print(q.nodes)
 print(q.edges)
+
 m = matcher.CECIMatcher(G)
 l = m.is_subgraph_match(q)
-for i in l:
-    print(i)
 
+print(l[1])
+
+print ("\n")
+for found in l[1]:
+    for key, value in found.items():
+        v = 0
+        for node in graph_nodes:
+            if node[0] == value:
+                v = node[1]['value']
+        print(str(key) + '(' + rev_h(value) + ')' + ' = ' + str(v))
+    print ("\n")
