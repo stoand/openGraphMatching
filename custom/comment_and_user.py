@@ -45,7 +45,7 @@ def rev_h(h):
     return "<missing_hash>"
 
 graph_nodes = [
-    # (h('primary0'), {'feat': 'primary_key'}),
+    (h('primary0'), {'feat': 'primary_key'}),
     # # (h('post0'), {'feat': 'post_id'}),
     # (h('comment_id0'), {'feat': 'comment_id'}),
     # (h('comment_body0'), {'feat': 'comment_body'}),
@@ -58,6 +58,9 @@ graph_nodes = [
     (h('Andy'), {'feat': 'first_name'}),
     (h('Bob'), {'feat': 'first_name'}),
     (h('Zero'), {'feat': 'last_name'}),
+    
+    (h('Other'), {'feat': 'first_name'}),
+    (h('Dude'), {'feat': 'last_name'}),
 ]
 
 graph_nodes.sort()
@@ -71,6 +74,9 @@ G.add_edges_from([
 
     # (h('primary1'), h("comment_id1")),
     # (h('primary1'), h("comment_body1")),
+    
+    (h('primary0'), h("Other")),
+    (h('primary0'), h("Dude")),
     
     (h('primary1'), h("Andy")),
     (h('primary1'), h("Bob")),

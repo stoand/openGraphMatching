@@ -4,22 +4,7 @@ from openGraphMatching.utils import convert_graph, check_match_correctness
 
 # CommentForm(session, post_id, id, body) :-
 #     CommentId(@session: Session, @post_id: Id, @id: Id),
-#     CommentBody(@session: Session, @post_id: Id, body: String), 
-
-# The classic example
-# Construct the query graph
-q = nx.Graph()
-q.add_nodes_from([
-    (10, {'feat': 'primary_key'}),
-    # (11, {'feat': 'post_id'}),
-    (12, {'feat': 'comment_id'}),
-    (13, {'feat': 'comment_body'}),
-])
-
-q.add_edges_from([
-    (10, 12),
-    (10, 13),
-])
+#     CommentBody(@session: Session, @post_id: Id, body: String).
 
 hashes = []
 
@@ -34,27 +19,24 @@ def rev_h(h):
             return i["v"]
     return "<missing_hash>"
 
-graph_nodes = [
-    # (0, {'feat': 'User:session', 'value': 'none'}),
-    
-    # (h("session1"), {'feat': 'UserFirstName:session', 'value': 'session1'}),
-    # (h("Andy"), {'feat': 'UserFirstName:first_name', 'value': 'Andy'}),
-    
-    # (5, {'feat': 'UserLastName:session', 'value': 'session0'}),
-    # (6, {'feat': 'UserLastName:last_name', 'value': 'Zero'}),
+# The classic example
+# Construct the query graph
+q = nx.Graph()
+q.add_nodes_from([
+    (0, {'feat': 'CommentId'}),
+    (1, {'feat': 'CommentBody'}),
+    (2, {'feat': 'CommentBody:Body'}),
+])
 
-    # (7, {'feat': 'UserFirstName:session', 'value': 'session0'}),
-    # (8, {'feat': 'UserFirstName:first_name', 'value': 'Bob'}),
-    # 
-    (h('primary0'), {'feat': 'primary_key'}),
-    # (h('post0'), {'feat': 'post_id'}),
-    (h('comment_id0'), {'feat': 'comment_id'}),
-    (h('comment_body0'), {'feat': 'comment_body'}),
-    
-    (h('primary1'), {'feat': 'primary_key'}),
-    # (h('post1'), {'feat': 'post_id'}),
-    (h('comment_id1'), {'feat': 'comment_id'}),
-    (h('comment_body1'), {'feat': 'comment_body'}),
+q.add_edges_from([
+    (0, 1),
+    (1, 2),
+])
+
+graph_nodes = [
+    (h('CommentId:session0:post0:id0'), {'feat': 'CommentId'}),
+    (h('CommentBody:session0:post0'), {'feat': 'CommentBody'}),
+    (h('CommentBody:session0:post0:bodyval0'), {'feat': 'CommentBody:Body'}),
 ]
 
 graph_nodes.sort()
@@ -63,19 +45,8 @@ graph_nodes.sort()
 G = nx.Graph()
 G.add_nodes_from(graph_nodes)
 G.add_edges_from([
-    (h('primary0'), h("comment_id0")),
-    (h('primary0'), h("comment_body0")),
-
-    (h('primary1'), h("comment_id1")),
-    (h('primary1'), h("comment_body1")),
-    
-    # (h('comment_id0'), {'feat': 'comment_id'}),
-    # (h('comment_body0'), {'feat': 'comment_body'}),
-    
-    # (h('session1'), {'feat': 'session'}),
-    # (h('post1'), {'feat': 'post_id'}),
-    # (h('comment_id1'), {'feat': 'comment_id'}),
-    # (h('comment_body1'), {'feat': 'comment_body'}),
+    (h('CommentId:session0:post0:id0'), h('CommentBody:session0:post0')),
+    (h('CommentBody:session0:post0'), h('CommentBody:session0:post0:bodyval0')),
 ])
 
 print(q.nodes)
